@@ -88,7 +88,7 @@ jobs:
         id: app
         working-directory: ${{ env.COMPOSE_APP_DIR }}
         run: |
-          compose-publish -d app.hash --pinned-images ${{needs.build-images.outputs.image_uri_ha-plugin}},${{needs.build-images.outputs.image_uri_ha-app}} ${{ env.FIO_REGISTRY }}/${{ env.FIO_FACTORY }}/${{ env.COMPOSE_APP_NAME }}:${{ needs.build-images.outputs.image_tag }} amd64,arm64
+          composectl publish --layers-manifest=false -d app.hash --pinned-images ${{needs.build-images.outputs.image_uri_ha-plugin}},${{needs.build-images.outputs.image_uri_ha-app}} ${{ env.FIO_REGISTRY }}/${{ env.FIO_FACTORY }}/${{ env.COMPOSE_APP_NAME }}:${{ needs.build-images.outputs.image_tag }} amd64,arm64
           uri="${{ env.FIO_REGISTRY }}/${{ env.FIO_FACTORY }}/${{ env.COMPOSE_APP_NAME }}@$(cat app.hash)"
           echo "app_uri=$uri" >> $GITHUB_OUTPUT
       -
