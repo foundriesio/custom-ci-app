@@ -1,0 +1,48 @@
+name: test-aws-oidc
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-2
+  AWS_ROLE_ARN: arn:aws:iam::685467930734:role/github-ecr-push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: |
+          set -eux
+          aws sts get-caller-identity
+
+      - name: Show caller account
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "Account: $ACCOUNT_ID"
+
+      - name: Verify ECR access
+        run: |
+          aws ecr describe-repositories || echo "No repositories yet"
+
+      - name: Verify ECR login
+        run: |
+          aws ecr get-login-password \
+            | docker login \
+              --username AWS \
+              --password-stdin $ACCOUNT_ID.dkr.ecr.${AWS_REGION}.amazonaws.com
