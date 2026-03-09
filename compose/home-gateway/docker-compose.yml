@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   ha-plugin:
-    image: "${IMAGE_BASE_URL-hub.foundries.io}/lmp-demo/ha-plugin"
+    image: "${IMAGE_BASE_URL-hub.foundries.io}/${IMAGE_NAMESPACE-lmp-demo}/ha-plugin:${IMAGE_TAG-latest}"
     restart: always
     ports:
       - 8080:${PORT-8080}
@@ -10,7 +10,7 @@ services:
       MSG: "${MSG-Hello world}"
 
   ha-app:
-    image: "${IMAGE_BASE_URL-hub.foundries.io}/lmp-demo/ha-app"
+    image: "${IMAGE_BASE_URL-hub.foundries.io}/${IMAGE_NAMESPACE-lmp-demo}/ha-app:${IMAGE_TAG-latest}"
     restart: always
     ports:
       - 8081:${PORT-8080}
